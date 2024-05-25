@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_food_app/modals/category.dart';
+import 'package:flutter_food_app/services/category_service.dart';
 import 'package:flutter_food_app/widgets/category_card_widget.dart';
 import 'package:flutter_food_app/widgets/search_widget.dart';
 
@@ -10,27 +11,11 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Flutter Food App',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightGreen),
         useMaterial3: true,
       ),
@@ -49,19 +34,39 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<Category> items = List<Category>.generate(100, (i) => Category(
-    idCategory: i.toString(),
-    strCategory: "$i category",
-    strCategoryThumb: "https://www.themealdb.com/images/category/beef.png",
-    strCategoryDescription: "Chicken is a type of domesticated fowl, a subspecies of the red junglefowl. It is one of the most common and widespread domestic animals, with a total population of more than 19 billion as of 2011. Humans commonly keep chickens as a source of food (consuming both their meat and eggs) and, more rarely, as pets.",
-  ));
+  final CategoryService _categoryService = CategoryService();
+
+  late List<Category> _categories = [];
+  late List<Category> _filteredCategories = [];
   final TextEditingController _searchController = TextEditingController();
 
-  void _search() {
+  @override
+  void initState() {
+    super.initState();
+    _getAllCategories();
+  }
+
+  Future<void> _getAllCategories() async {
+    try {
+      final categories = await _categoryService.getAllCategories();
+      setState(() {
+        _categories = categories;
+        _filteredCategories = categories;
+      });
+    } catch (e) {
+      print('Hata: $e');
+    }
+  }
+
+  void _search(query) {
     String query = _searchController.text;
-    // Burada arama sorgusunu kullanarak istediğiniz işlemi yapabilirsiniz
-    print("Arama sorgusu: $query");
-    // Örneğin, arama sorgusuyla bir API çağrısı yapabilirsiniz
+    setState(() {
+      _filteredCategories = _categories
+          .where((category) =>
+              category.description.contains(query) ||
+              category.title.contains(query))
+          .toList();
+    });
   }
 
   @override
@@ -75,16 +80,17 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           SearchWidget(
             searchController: _searchController,
-            onSearch: _search,
+            onChanged: _search,
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: items.length,
+              itemCount: _filteredCategories.length,
               itemBuilder: (context, index) {
                 return CategoryCardWidget(
-                  title: items[index].strCategory,
-                  description: items[index].strCategoryDescription,
-                  imagePath:items[index].strCategoryThumb,
+                  id: _filteredCategories[index].id,
+                  title: _filteredCategories[index].title,
+                  description: _filteredCategories[index].description,
+                  imagePath: _filteredCategories[index].thumb,
                 );
               },
             ),

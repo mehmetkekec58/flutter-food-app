@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
 class CategoryCardWidget extends StatelessWidget {
+  final String id;
   final String imagePath;
   final String title;
   final String description;
 
   const CategoryCardWidget({
     super.key,
+    required this.id,
     required this.imagePath,
     required this.title,
     required this.description,
@@ -19,12 +21,11 @@ class CategoryCardWidget extends StatelessWidget {
       margin: const EdgeInsets.all(8),
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
       decoration: BoxDecoration(
-        color: const Color.fromRGBO(0, 0, 0, 0.498),
+        color: const Color.fromARGB(94, 177, 209, 138),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Card(
         elevation: 4,
-        color: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
@@ -43,14 +44,14 @@ class CategoryCardWidget extends StatelessWidget {
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
-                  color: Colors.white,
+                  color: Colors.black,
                 ),
               ),
               subtitle: Text(
                 description.length > textLength
                     ? "${description.substring(0, textLength)}..."
                     : description,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Color.fromARGB(255, 97, 97, 97)),
               ),
             ),
           ],

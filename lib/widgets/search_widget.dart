@@ -30,6 +30,7 @@ class SearchWidget extends StatelessWidget {
         children: [
           Expanded(
             child: TextField(
+              autofocus: false,
               controller: searchController,
               onChanged: onChanged,
               decoration: InputDecoration(
@@ -41,12 +42,20 @@ class SearchWidget extends StatelessWidget {
           if (searchController.text != "")
             IconButton(
               icon: const Icon(Icons.close),
-              onPressed: onSearch,
+              onPressed: () {
+                searchController.text = "";
+                onChanged!("");
+              },
             ),
-          if (onSearch != null)
+          if (onSearch != null && searchController.text != "")
             IconButton(
               icon: const Icon(Icons.search),
               onPressed: onSearch,
+            ),
+          if (searchController.text == "")
+            IconButton(
+              icon: const Icon(Icons.search),
+              onPressed: () {},
             ),
         ],
       ),

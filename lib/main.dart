@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_food_app/modals/category.dart';
+import 'package:flutter_food_app/screens/food_screen.dart';
 import 'package:flutter_food_app/services/category_service.dart';
 import 'package:flutter_food_app/widgets/category_card_widget.dart';
 import 'package:flutter_food_app/widgets/search_widget.dart';
@@ -59,14 +60,26 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _search(query) {
-    String query = _searchController.text;
     setState(() {
+      if(query.isEmpty){
+         _filteredCategories = _categories.toList();
+         return;
+      }
       _filteredCategories = _categories
           .where((category) =>
               category.description.contains(query) ||
               category.title.contains(query))
           .toList();
     });
+  }
+
+  void _onclickCategory(Category category) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FoodScreen(category: category),
+      ),
+    );
   }
 
   @override
@@ -86,11 +99,14 @@ class _MyHomePageState extends State<MyHomePage> {
             child: ListView.builder(
               itemCount: _filteredCategories.length,
               itemBuilder: (context, index) {
-                return CategoryCardWidget(
-                  id: _filteredCategories[index].id,
-                  title: _filteredCategories[index].title,
-                  description: _filteredCategories[index].description,
-                  imagePath: _filteredCategories[index].thumb,
+                return GestureDetector(
+                  onTap: () => _onclickCategory(_filteredCategories[index]),
+                  child: CategoryCardWidget(
+                    id: _filteredCategories[index].id,
+                    title: _filteredCategories[index].title,
+                    description: _filteredCategories[index].description,
+                    imagePath: _filteredCategories[index].thumb,
+                  ),
                 );
               },
             ),

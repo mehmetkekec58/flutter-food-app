@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_food_app/consts/colors.dart';
-import 'package:flutter_food_app/consts/messages.dart';
 import 'package:flutter_food_app/modals/category.dart';
 import 'package:flutter_food_app/modals/food.dart';
 import 'package:flutter_food_app/screens/food_detail_screen.dart';

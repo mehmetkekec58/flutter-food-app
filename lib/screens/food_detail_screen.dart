@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_food_app/consts/messages.dart';
+import 'package:flutter_food_app/helpers/youtube_video_id_helper.dart';
 import 'package:flutter_food_app/modals/food_detail.dart';
 import 'package:flutter_food_app/services/food_service.dart';
 import 'package:toastification/toastification.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class FoodDetailScreen extends StatefulWidget {
   final String foodId;
-  const FoodDetailScreen({super.key, required this.foodId});
+  const FoodDetailScreen({Key? key, required this.foodId}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _FoodDetailScreenState createState() => _FoodDetailScreenState();
 }
 
 class _FoodDetailScreenState extends State<FoodDetailScreen> {
   final FoodService _foodService = FoodService();
-  late FoodDetail? _foodDetail = null;
+  FoodDetail? _foodDetail = null;
+  final _controller = YoutubePlayerController();
 
   @override
   void initState() {
@@ -25,15 +27,17 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
 
   Future<void> _getFoodDetailByFoodId() async {
     try {
-      print(widget.foodId);
       final foodDetail =
           await _foodService.getFoodDetailByFoodId(widget.foodId);
       setState(() {
         _foodDetail = foodDetail;
+        _controller.loadVideoById(
+            videoId: YoutubeVideoIdHelper.getVideoId(
+                    foodDetail?.youtubeVideo ?? "") ??
+                "");
       });
     } catch (e) {
       toastification.show(
-        // ignore: use_build_context_synchronously
         context: context,
         title: Text('Hata: $e'),
         autoCloseDuration: const Duration(seconds: 5),
@@ -50,18 +54,21 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
       ),
       body: _foodDetail == null
           ? const Center(
-              child: CircularProgressIndicator(), // Yükleniyor animasyonu
+              child: CircularProgressIndicator(),
             )
           : SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  FadeInImage.assetNetwork(
-                    placeholder: "assets/images/loading.gif",
-                    image: _foodDetail!.thumb,
-                    width: double.infinity,
-                    height: 250,
-                    fit: BoxFit.cover,
+                  Hero(
+                    tag: 'foodImage_${_foodDetail!.id}',
+                    child: FadeInImage.assetNetwork(
+                      placeholder: "assets/images/loading.gif",
+                      image: _foodDetail!.thumb,
+                      width: double.infinity,
+                      height: 250,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                   const SizedBox(height: 20.0),
                   Text(
@@ -79,6 +86,14 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                       _foodDetail!.description,
                       style: const TextStyle(fontSize: 13.0),
                       textAlign: TextAlign.justify,
+                    ),
+                  ),
+                  const SizedBox(height: 10.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: YoutubePlayer(
+                      controller: _controller,
+                      aspectRatio: 16 / 9,
                     ),
                   ),
                   const SizedBox(height: 20.0),
@@ -107,7 +122,8 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                               measure != null &&
                               measure != "") {
                             return Text(
-                                '${index + 1}) $ingredient: ($measure)');
+                              '${index + 1}) $ingredient: ($measure)',
+                            );
                           }
                           return Container();
                         },
@@ -117,8 +133,8 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.0),
                     child: Divider(
-                      color: Colors.black, // Çizginin rengi
-                      thickness: 0.5, // Çizginin kalınlığı
+                      color: Colors.black,
+                      thickness: 0.5,
                     ),
                   ),
                   Padding(

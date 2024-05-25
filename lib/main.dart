@@ -4,6 +4,7 @@ import 'package:flutter_food_app/screens/food_screen.dart';
 import 'package:flutter_food_app/services/category_service.dart';
 import 'package:flutter_food_app/widgets/card_widget.dart';
 import 'package:flutter_food_app/widgets/search_widget.dart';
+import 'package:toastification/toastification.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,14 +15,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return ToastificationWrapper(
+        child: MaterialApp(
       title: 'Flutter Food App',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightGreen),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Food App'),
-    );
+    ));
   }
 }
 
@@ -55,7 +57,12 @@ class _MyHomePageState extends State<MyHomePage> {
         _filteredCategories = categories;
       });
     } catch (e) {
-      print('Hata: $e');
+      toastification.show(
+        // ignore: use_build_context_synchronously
+        context: context,
+        title: Text('Hata: $e'),
+        autoCloseDuration: const Duration(seconds: 5),
+      );
     }
   }
 
@@ -67,7 +74,9 @@ class _MyHomePageState extends State<MyHomePage> {
       }
       _filteredCategories = _categories
           .where((category) =>
-              category.description.toLowerCase().contains(query.toLowerCase()) ||
+              category.description
+                  .toLowerCase()
+                  .contains(query.toLowerCase()) ||
               category.title.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });

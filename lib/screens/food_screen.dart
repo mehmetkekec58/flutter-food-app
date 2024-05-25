@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_food_app/consts/colors.dart';
+import 'package:flutter_food_app/consts/messages.dart';
 import 'package:flutter_food_app/modals/category.dart';
 import 'package:flutter_food_app/modals/food.dart';
 import 'package:flutter_food_app/screens/food_detail_screen.dart';
+import 'package:flutter_food_app/services/category_service.dart';
 import 'package:flutter_food_app/services/food_service.dart';
 import 'package:flutter_food_app/widgets/card_widget.dart';
 import 'package:flutter_food_app/widgets/search_widget.dart';
+import 'package:toastification/toastification.dart';
 
 class FoodScreen extends StatefulWidget {
   final Category category;
@@ -17,28 +21,54 @@ class FoodScreen extends StatefulWidget {
 }
 
 class _FoodScreenState extends State<FoodScreen> {
+  late bool _loading = true;
   final FoodService _foodService = FoodService();
   late List<Food> _foods = [];
   late List<Food> _filteredFoods = [];
+  final CategoryService _categoryService = CategoryService();
+  late List<Category> _categories = [];
+  late Category _category = widget.category;
   final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _getAllFoodsByCategoryName();
+    _getAllCategories();
   }
 
   Future<void> _getAllFoodsByCategoryName() async {
     try {
-      print(widget.category.title);
       final foods =
-          await _foodService.getAllFoodsByCategoryName(widget.category.title);
+          await _foodService.getAllFoodsByCategoryName(_category.title);
       setState(() {
         _foods = foods;
         _filteredFoods = foods;
+        _loading = false;
       });
     } catch (e) {
-      print('Hata var: $e');
+        toastification.show(
+        // ignore: use_build_context_synchronously
+        context: context,
+        title: Text('Hata: $e'),
+        autoCloseDuration: const Duration(seconds: 5),
+      );
+    }
+  }
+
+  Future<void> _getAllCategories() async {
+    try {
+      final categories = await _categoryService.getAllCategories();
+      setState(() {
+        _categories = categories;
+      });
+    } catch (e) {
+      toastification.show(
+        // ignore: use_build_context_synchronously
+        context: context,
+        title: Text('Hata: $e'),
+        autoCloseDuration: const Duration(seconds: 5),
+      );
     }
   }
 
@@ -55,13 +85,21 @@ class _FoodScreenState extends State<FoodScreen> {
     });
   }
 
-  void _onclickCategory(Food food) {
+  void _onclickFood(Food food) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => FoodDetailScreen(foodId: food.id),
       ),
     );
+  }
+
+  _setCategory(Category category) {
+    setState(() {
+      _loading = true;
+      _category = category;
+    });
+    _getAllFoodsByCategoryName();
   }
 
   @override
@@ -78,28 +116,64 @@ class _FoodScreenState extends State<FoodScreen> {
             onChanged: _search,
           ),
           Text(
-            "${widget.category.title} Kategorisi",
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20
-            ),
+            _category.title,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            textAlign: TextAlign.start,
           ),
-          Expanded(
+          const SizedBox(height: 10.0),
+          SizedBox(
+            height: 30.0,
             child: ListView.builder(
-              itemCount: _filteredFoods.length,
+              scrollDirection: Axis.horizontal,
+              itemCount: _categories.length,
               itemBuilder: (context, index) {
                 return GestureDetector(
-                  onTap: () => _onclickCategory(_filteredFoods[index]),
-                  child: CardWidget(
-                    id: _filteredFoods[index].id,
-                    title: _filteredFoods[index].title,
-                    description: "",
-                    imagePath: _filteredFoods[index].thumb,
-                  ),
-                );
+                    onTap: () => _setCategory(_categories[index]),
+                    child: Container(
+                      width: 80.0,
+                      margin: const EdgeInsets.only(right: 10.0),
+                      decoration: BoxDecoration(
+                        color: _categories[index].id == _category.id
+                            ? Colors.green
+                            : AppColor.lightGreen,
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      child: Center(
+                        child: Text(
+                          _categories[index].title,
+                          style: TextStyle(
+                              fontSize: 10.0,
+                              color: _categories[index].id == _category.id
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ));
               },
             ),
           ),
+          const SizedBox(height: 15.0),
+          _loading
+              ? const Center(
+                  child: CircularProgressIndicator(), // Yükleniyor animasyonu
+                )
+              : Expanded(
+                  child: ListView.builder(
+                    itemCount: _filteredFoods.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () => _onclickFood(_filteredFoods[index]),
+                        child: CardWidget(
+                          id: _filteredFoods[index].id,
+                          title: _filteredFoods[index].title,
+                          description: "",
+                          imagePath: _filteredFoods[index].thumb,
+                        ),
+                      );
+                    },
+                  ),
+                ),
         ],
       ),
     );

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_food_app/consts/colors.dart';
 
-class CategoryCardWidget extends StatelessWidget {
+class CardWidget extends StatelessWidget {
   final String id;
   final String imagePath;
   final String title;
   final String description;
 
-  const CategoryCardWidget({
+  const CardWidget({
     super.key,
     required this.id,
     required this.imagePath,
@@ -21,7 +23,7 @@ class CategoryCardWidget extends StatelessWidget {
       margin: const EdgeInsets.all(8),
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
       decoration: BoxDecoration(
-        color: const Color.fromARGB(94, 177, 209, 138),
+        color: AppColor.lightGreen,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Card(
@@ -31,8 +33,9 @@ class CategoryCardWidget extends StatelessWidget {
         ),
         child: Column(
           children: <Widget>[
-            Image.network(
-              imagePath,
+            FadeInImage.assetNetwork(
+              placeholder: "assets/images/loading.gif",
+              image:imagePath,
               width: double.infinity,
               height: 200,
               fit: BoxFit.cover,
@@ -51,7 +54,7 @@ class CategoryCardWidget extends StatelessWidget {
                 description.length > textLength
                     ? "${description.substring(0, textLength)}..."
                     : description,
-                style: const TextStyle(color: Color.fromARGB(255, 97, 97, 97)),
+                style: const TextStyle(color: AppColor.gray),
               ),
             ),
           ],

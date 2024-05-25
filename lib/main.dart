@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_food_app/modals/category.dart';
 import 'package:flutter_food_app/screens/food_screen.dart';
 import 'package:flutter_food_app/services/category_service.dart';
-import 'package:flutter_food_app/widgets/category_card_widget.dart';
+import 'package:flutter_food_app/widgets/card_widget.dart';
 import 'package:flutter_food_app/widgets/search_widget.dart';
 
 void main() {
@@ -61,14 +61,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _search(query) {
     setState(() {
-      if(query.isEmpty){
-         _filteredCategories = _categories.toList();
-         return;
+      if (query.isEmpty) {
+        _filteredCategories = _categories.toList();
+        return;
       }
       _filteredCategories = _categories
           .where((category) =>
-              category.description.contains(query) ||
-              category.title.contains(query))
+              category.description.toLowerCase().contains(query.toLowerCase()) ||
+              category.title.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
   }
@@ -101,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () => _onclickCategory(_filteredCategories[index]),
-                  child: CategoryCardWidget(
+                  child: CardWidget(
                     id: _filteredCategories[index].id,
                     title: _filteredCategories[index].title,
                     description: _filteredCategories[index].description,

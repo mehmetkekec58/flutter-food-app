@@ -1,3 +1,3 @@
 class Messages {
-  static const search = "Ara";
+  static const search = "Search";
 }

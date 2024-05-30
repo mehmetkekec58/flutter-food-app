@@ -116,14 +116,14 @@ When the application starts, the homepage displays popular food categories. User
 Below are the screenshots of the application:
 
 1. **Home Page**: Displays popular food categories.
-![Home Page](screenshots/Screenshot_2024-05-30-21-24-02-197_com.example.flutter_food_app.jpg){:height="400px"}
+![Home Page](screenshots/Screenshot_2024-05-30-21-24-02-197_com.example.flutter_food_app.jpg)
 
 2. **Category Page**: Lists recipes belonging to the selected category.
-![Category Page](screenshots/Screenshot_2024-05-30-21-24-09-761_com.example.flutter_food_app.jpg){:height="400px"}
+![Category Page](screenshots/Screenshot_2024-05-30-21-24-09-761_com.example.flutter_food_app.jpg)
 
 3. **Recipe Detail Page**: Shows detailed information and recipe of the selected dish.
-![Recipe Detail Page](screenshots/Screenshot_2024-05-30-21-25-16-610_com.example.flutter_food_app.jpg){:height="400px"}
-![Recipe Detail Page](screenshots/Screenshot_2024-05-30-21-26-09-268_com.example.flutter_food_app.jpg){:height="400px"}
+![Recipe Detail Page](screenshots/Screenshot_2024-05-30-21-25-16-610_com.example.flutter_food_app.jpg)
+![Recipe Detail Page](screenshots/Screenshot_2024-05-30-21-26-09-268_com.example.flutter_food_app.jpg)
 
 4. **Search Page**: A search bar where users can search for recipes.
-![Search Page](screenshots/Screenshot_2024-05-30-21-24-27-641_com.example.flutter_food_app.jpg){:height="400px"}
+![Search Page](screenshots/Screenshot_2024-05-30-21-24-27-641_com.example.flutter_food_app.jpg)

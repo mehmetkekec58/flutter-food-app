@@ -20,12 +20,17 @@ class FoodScreen extends StatefulWidget {
 }
 
 class _FoodScreenState extends State<FoodScreen> {
+  // yüklenme ekranı için loading ekledim
   late bool _loading = true;
+  // yemekleri listelemek için food servisi çağırdım
   final FoodService _foodService = FoodService();
   late List<Food> _foods = [];
+  // yemekleri arama inputu ile filterelemek için filtered food u kullandım
   late List<Food> _filteredFoods = [];
+  // üste kategorileri listelemek için category servisi çağırdım.
   final CategoryService _categoryService = CategoryService();
   late List<Category> _categories = [];
+  // Diğer sayfadan gelen kategori verisini aldım. Daha sonradan değiştirebilmek için late kullandım
   late Category _category = widget.category;
   final TextEditingController _searchController = TextEditingController();
 
@@ -35,7 +40,7 @@ class _FoodScreenState extends State<FoodScreen> {
     _getAllFoodsByCategoryName();
     _getAllCategories();
   }
-
+ // async olarak kategori adına göre tüm yiyecekleri listeledim
   Future<void> _getAllFoodsByCategoryName() async {
     try {
       final foods =
@@ -54,7 +59,7 @@ class _FoodScreenState extends State<FoodScreen> {
       );
     }
   }
-
+// kategori adına göre tüm kategorileri listeledim
   Future<void> _getAllCategories() async {
     try {
       final categories = await _categoryService.getAllCategories();
@@ -71,6 +76,9 @@ class _FoodScreenState extends State<FoodScreen> {
     }
   }
 
+///onChange a _search fonksiyonunu atadım ve query de search widget a ne yazıldıysa onu veriyor. Eğer query'nin içi boşaltıldıysa tüm yiycekleri tekrardan listelemek
+// için filtered food a foods ı atıyorum.
+// eğer query doluysa lowercase yapıp başlıkta bu queryi içeren yiycekleri fileted food a atıyorum.
   void _search(query) {
     setState(() {
       if (query.isEmpty) {
@@ -84,6 +92,7 @@ class _FoodScreenState extends State<FoodScreen> {
     });
   }
 
+// yiyeceğe tıklandığında food ıd verisi ile FoodDetailScreen sayfasına geçiyor.
   void _onclickFood(Food food) {
     Navigator.push(
       context,
@@ -93,6 +102,7 @@ class _FoodScreenState extends State<FoodScreen> {
     );
   }
 
+// Burada üstem kategori seçerse kategori değiştirmeyi sağlıyor.
   _setCategory(Category category) {
     setState(() {
       _loading = true;
@@ -110,16 +120,20 @@ class _FoodScreenState extends State<FoodScreen> {
       ),
       body: Column(
         children: [
+          // Arama inputum
           SearchWidget(
             searchController: _searchController,
             onChanged: _search,
           ),
+          // Seçili kategori adı
           Text(
             _category.title,
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             textAlign: TextAlign.start,
           ),
+          // Boşluk bırakmak için
           const SizedBox(height: 10.0),
+          // yatay olarak sıralanmış liste
           SizedBox(
             height: 30.0,
             child: ListView.builder(
@@ -132,6 +146,7 @@ class _FoodScreenState extends State<FoodScreen> {
                       width: 80.0,
                       margin: const EdgeInsets.only(right: 10.0),
                       decoration: BoxDecoration(
+                        // seçili kategorinin rengini değiştirdim
                         color: _categories[index].id == _category.id
                             ? Colors.green
                             : AppColor.lightGreen,
@@ -153,11 +168,14 @@ class _FoodScreenState extends State<FoodScreen> {
             ),
           ),
           const SizedBox(height: 15.0),
+          // yükleniyorsa ekrana yükleneme işareti kodum
           _loading
               ? const Center(
                   child: CircularProgressIndicator(), // Yükleniyor animasyonu
                 )
-              : Expanded(
+              :
+              // yüklendikten sonra ekrana food listesini bastım 
+              Expanded(
                   child: ListView.builder(
                     itemCount: _filteredFoods.length,
                     itemBuilder: (context, index) {

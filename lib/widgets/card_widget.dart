@@ -32,6 +32,7 @@ class CardWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
         ),
         child: Column(
+          // loading gif ile fotoğraf yükleme kodu
           children: <Widget>[
             FadeInImage.assetNetwork(
               placeholder: "assets/images/loading.gif",
@@ -40,6 +41,7 @@ class CardWidget extends StatelessWidget {
               height: 200,
               fit: BoxFit.cover,
             ),
+            // Burada başlık ve açıklamayı ekranı bastım. Açıklama çok uzun olursa diye kısaltma işlemi uyguladım.
             ListTile(
               title: Text(
                 title,

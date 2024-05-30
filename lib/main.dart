@@ -37,18 +37,22 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  // kategori servisi çağırdım
   final CategoryService _categoryService = CategoryService();
 
   late List<Category> _categories = [];
+  // filtered kategoriyi liste ile ekrana basıyorum.
   late List<Category> _filteredCategories = [];
   final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    // sayfa açılırken bu fonksiyonu çalıştırıyorum.
     _getAllCategories();
   }
 
+// async işlem ile API'ye istek atıyorum
   Future<void> _getAllCategories() async {
     try {
       final categories = await _categoryService.getAllCategories();
@@ -57,6 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
         _filteredCategories = categories;
       });
     } catch (e) {
+      // hata alırsa bildirim gönderiyorum
       toastification.show(
         // ignore: use_build_context_synchronously
         context: context,
@@ -66,6 +71,9 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+// onChange a _search fonksiyonunu atadım ve query de search widget a ne yazıldıysa onu veriyor. Eğer query'nin içi boşaltıldıysa tüm kategorileri tekrardan listelemek
+// için filtered category ye category ı atıyorum.
+// eğer query doluysa lowercase yapıp açıklamada ya da başlıkla bu queryi içeren kategorileri fileted category e atıyorum.
   void _search(query) {
     setState(() {
       if (query.isEmpty) {
@@ -81,6 +89,8 @@ class _MyHomePageState extends State<MyHomePage> {
           .toList();
     });
   }
+
+// category e tıklanınca kategorinin yemeklerini listelemek için FoodScreen a gidiyor ve veri olarak category i gönderiyor.
 
   void _onclickCategory(Category category) {
     Navigator.push(
@@ -100,6 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(
         children: [
+          // Dinamik olarak yazdığım ara inputum
           SearchWidget(
             searchController: _searchController,
             onChanged: _search,
@@ -108,6 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: ListView.builder(
               itemCount: _filteredCategories.length,
               itemBuilder: (context, index) {
+                // GestureDetector onTap ile listeye tıklamayı sağlıyor.
                 return GestureDetector(
                   onTap: () => _onclickCategory(_filteredCategories[index]),
                   child: CardWidget(

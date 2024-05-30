@@ -6,7 +6,9 @@ class SearchWidget extends StatelessWidget {
   final VoidCallback? onSearch;
   final ValueChanged<String>? onChanged;
   final String searchText;
-
+  
+  // onSearch ile arama butona basınca arar.
+  // onChanged ile herbir harf yazıldığında arama yapar.
   const SearchWidget(
       {super.key,
       required this.searchController,
@@ -29,6 +31,7 @@ class SearchWidget extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
+            // search inputum
             child: TextField(
               autofocus: false,
               controller: searchController,
@@ -39,6 +42,7 @@ class SearchWidget extends StatelessWidget {
               ),
             ),
           ),
+          // close iconu ile input içinde bir şey yazıyorsa onu temizlemek için
           if (searchController.text != "")
             IconButton(
               icon: const Icon(Icons.close),

@@ -8,7 +8,7 @@ class Food {
     required this.title,
     required this.thumb,
   });
-
+// API'den json olarak gelen veriyi kendi modelime mapladim
   factory Food.fromJson(Map<String, dynamic> json) {
     return Food(
       id: json['idMeal'],

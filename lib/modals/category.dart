@@ -11,6 +11,7 @@ class Category {
     required this.description,
   });
 
+// API'den json olarak gelen veriyi kendi modelime mapladim
   factory Category.fromJson(Map<String, dynamic> json) {
     return Category(
       id: json['idCategory'],

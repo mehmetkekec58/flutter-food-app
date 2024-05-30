@@ -5,6 +5,7 @@ import 'package:flutter_food_app/modals/food_detail.dart';
 import 'package:http/http.dart' as http;
 
 class FoodService {
+  // Kategori adına göre tüm yiyecekleri listeler
   Future<List<Food>> getAllFoodsByCategoryName(String categoryName) async {
     final response =
         await http.get(Uri.parse("${BaseUrl.url}filter.php?c=$categoryName"));
@@ -16,6 +17,7 @@ class FoodService {
     }
   }
 
+   // yiyecek Id ye göre yiyecek detaylarını getirir
    Future<FoodDetail?> getFoodDetailByFoodId(String foodId) async {
     final response =
         await http.get(Uri.parse("${BaseUrl.url}lookup.php?i=$foodId"));

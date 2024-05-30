@@ -17,6 +17,7 @@ class FoodDetailScreen extends StatefulWidget {
 class _FoodDetailScreenState extends State<FoodDetailScreen> {
   final FoodService _foodService = FoodService();
   FoodDetail? _foodDetail = null;
+  // youtube oynatıcı
   final _controller = YoutubePlayerController();
 
   @override
@@ -25,6 +26,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
     _getFoodDetailByFoodId();
   }
 
+// async olarak yiyeceğin Id ile bilgilerini çektim
   Future<void> _getFoodDetailByFoodId() async {
     try {
       final foodDetail =
@@ -52,6 +54,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Food App'),
       ),
+      // foodDetail yoksa yüklenme işareti koydum
       body: _foodDetail == null
           ? const Center(
               child: CircularProgressIndicator(),
@@ -60,6 +63,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  // Hero animasyonu ekledim
                   Hero(
                     tag: 'foodImage_${_foodDetail!.id}',
                     child: FadeInImage.assetNetwork(
@@ -89,6 +93,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                     ),
                   ),
                   const SizedBox(height: 10.0),
+                  // Youtube oynatıcı
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: YoutubePlayer(
@@ -115,6 +120,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                       children: List.generate(
                         _foodDetail!.ingredients.length,
                         (index) {
+                          // ingredient ve measure u yan yana yazdırdım
                           final ingredient = _foodDetail!.ingredients[index];
                           final measure = _foodDetail!.measures[index];
                           if (ingredient != "" &&
@@ -131,6 +137,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                     ),
                   ),
                   const Padding(
+                    // Araya çizgi koydum
                     padding: EdgeInsets.symmetric(horizontal: 20.0),
                     child: Divider(
                       color: Colors.black,
